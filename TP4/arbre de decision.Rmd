@@ -1,0 +1,61 @@
+---
+title: "TP4 Arbre de Décision"
+autor: BOUZOURENE Madjid
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+```{r}
+Meteo <- c('soleil','soleil','soleil','soleil','nuages','nuages','nuages','nuages','soleil')
+Amis <- c('présents','absents','présents','absents','absents','présents','absents','présents','absents')
+Vent <- c('faible','fort','fort','faible','faible','fort','fort','faible','faible')
+Jour <- c('week-end','semaine','semaine','semaine','week-end','week-end','semaine','week-end','week-end')
+```
+
+
+```{r}
+Décision <- c('oui','non','non','oui','non','non','non','oui','non')
+```
+
+```{r}
+Table <- data.frame(Meteo, Amis, Vent, Jour, Décision)
+```
+
+```{r}
+print(Table)
+```
+
+
+```{r}
+library(rpart)# Pour l’arbre de décision
+library(rpart.plot) # Pour la représentation de l’arbre de décision
+
+```
+
+
+```{r}
+str(Table)
+```
+
+```{r}
+arbre <- rpart(formula = Décision ~ ., data = Table, method = "class",minsplit=2,cp=0)
+
+print(arbre)
+```
+
+
+
+```{r}
+rpart.plot(arbre,extra = 1)
+```
+
+
+```{r}
+arbreElagué <- rpart(formula = Décision ~ ., data = Table, minsplit = 2, minbucket=3)
+print(arbreElagué)
+```
+```{r}
+rpart.plot(arbreElagué)
+```
+
