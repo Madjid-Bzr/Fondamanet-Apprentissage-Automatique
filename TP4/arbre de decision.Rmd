@@ -1,35 +1,42 @@
 ---
 title: "TP4 Arbre de Décision"
-autor: BOUZOURENE Madjid
+author: "BOUZOURENE Madjid"
+date: "2022-11-08"
 output:
   pdf_document: default
+  html_document:
+    df_print: paged
   html_notebook: default
 ---
 
 ```{r}
+# Creation de la base de donnée
 Meteo <- c('soleil','soleil','soleil','soleil','nuages','nuages','nuages','nuages','soleil')
-Amis <- c('présents','absents','présents','absents','absents','présents','absents','présents','absents')
+Amis <- c('présents','absents','présents','absents','absents','présents',
+          'absents','présents','absents')
 Vent <- c('faible','fort','fort','faible','faible','fort','fort','faible','faible')
-Jour <- c('week-end','semaine','semaine','semaine','week-end','week-end','semaine','week-end','week-end')
-```
-
-
-```{r}
+Jour <- c('week-end','semaine','semaine','semaine','week-end','week-end',
+          'semaine','week-end','week-end')
 Décision <- c('oui','non','non','oui','non','non','non','oui','non')
 ```
+
 
 ```{r}
 Table <- data.frame(Meteo, Amis, Vent, Jour, Décision)
 ```
 
+# Affichage des données Table:
 ```{r}
+
 print(Table)
 ```
 
 
 ```{r}
-library(rpart)# Pour l’arbre de décision
-library(rpart.plot) # Pour la représentation de l’arbre de décision
+# Pour l’arbre de décision
+library(rpart)
+# Pour la représentation de l’arbre de décision
+library(rpart.plot) 
 
 ```
 
@@ -44,18 +51,49 @@ arbre <- rpart(formula = Décision ~ ., data = Table, method = "class",minsplit=
 print(arbre)
 ```
 
-
+# Représentation de l'arbre
 
 ```{r}
 rpart.plot(arbre,extra = 1)
 ```
 
-
+# Creation de l'arbre elagué :
 ```{r}
 arbreElagué <- rpart(formula = Décision ~ ., data = Table, minsplit = 2, minbucket=3)
 print(arbreElagué)
 ```
+# Représentation de l'arbre elagué :
 ```{r}
 rpart.plot(arbreElagué)
+```
+
+# Données de deuxieme tableau pour le test:
+```{r}
+Meteo <- c("soleil","nuages","soleil","soleil","nuages")
+Amis <- c("présents","absents","absents","absents","présents")
+Vent <- c("fort","faible","faible","faible","faible")
+Jour <- c("week-end","semaine","week-end","semaine","semaine")
+Décision <- c("non","non","oui","non","oui")
+```
+
+# Affichage de tableau test
+```{r}
+Table_test <- data.frame(Meteo,Amis,Vent,Jour,Décision)
+print(Table_test)
+```
+
+```{r}
+Table_predict <- predict(arbreElagué, newdata = Table_test, type = "class")
+Table_predict
+```
+# Matrice de confusion :
+```{r}
+matrix_c<-table(Table_test$Décision,Table_predict)
+matrix_c
+```
+
+```{r}
+erreur<-1.0-(matrix_c[1,1]+matrix_c[2,2])/sum(matrix_c)
+cat("Erreur",  erreur)
 ```
 
